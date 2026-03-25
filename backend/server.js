@@ -20,11 +20,12 @@ app.use(express.urlencoded({ extended: false }));
 const authRoutes = require('./routes/authRoutes');
 const ngoRoutes = require('./routes/ngoRoutes');
 const eventRoutes = require('./routes/eventRoutes');
+const volunteerRoutes = require('./routes/volunteerRoutes');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/ngos', ngoRoutes);
 app.use('/api/events', eventRoutes);
-
+app.use('/api/volunteers', volunteerRoutes);
 
 // Base route
 app.get('/', (req, res) => {

@@ -18,7 +18,11 @@ app.use(express.urlencoded({ extended: false }));
 
 // Routes
 const authRoutes = require('./routes/authRoutes');
+const ngoRoutes = require('./routes/ngoRoutes');
+
 app.use('/api/auth', authRoutes);
+app.use('/api/ngos', ngoRoutes);
+
 
 // Base route
 app.get('/', (req, res) => {

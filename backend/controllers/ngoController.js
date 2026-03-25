@@ -78,7 +78,7 @@ const updateNGO = async (req, res) => {
         const updatedNGO = await NGO.findByIdAndUpdate(
             req.params.id,
             req.body,
-            { new: true, runValidators: true }
+            { returnDocument: true, runValidators: true }
         );
 
         res.json(updatedNGO);

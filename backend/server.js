@@ -19,9 +19,11 @@ app.use(express.urlencoded({ extended: false }));
 // Routes
 const authRoutes = require('./routes/authRoutes');
 const ngoRoutes = require('./routes/ngoRoutes');
+const eventRoutes = require('./routes/eventRoutes');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/ngos', ngoRoutes);
+app.use('/api/events', eventRoutes);
 
 
 // Base route

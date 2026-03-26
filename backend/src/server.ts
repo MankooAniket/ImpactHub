@@ -21,11 +21,13 @@ import authRoutes from './routes/authRoutes';
 import ngoRoutes from './routes/ngoRoutes';
 import eventRoutes from './routes/eventRoutes';
 import volunteerRoutes from './routes/volunteerRoutes';
+import adminRoutes from './routes/adminRoutes';
 
 app.use('/api/auth', authRoutes);
 app.use('/api/ngos', ngoRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/volunteers', volunteerRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Base route
 app.get('/', (req: Request, res: Response) => {

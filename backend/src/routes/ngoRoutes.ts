@@ -1,23 +1,24 @@
-const express = require('express');
-const router = express.Router();
-const {
-    getAllNGOs,
-    getNGOById,
-    createNGO,
-    updateNGO,
-    deleteNGO,
-    getMyNGO,
-} = require('../controllers/ngoController');
-const { protect, authorize } = require('../middleware/authMiddleware');
+import { Router } from 'express';
+import {
+  getAllNGOs,
+  getNGOById,
+  getMyNGO,
+  createNGO,
+  updateNGO,
+  deleteNGO,
+} from '../controllers/ngoController';
+import { protect, authorize } from '../middleware/authMiddleware';
+
+const router: Router = Router();
 
 // Public routes
 router.get('/', getAllNGOs);
-router.get('/:id', getNGOById);
 
-// Private routes
+// Private routes — must be before /:id to avoid conflict
 router.get('/me', protect, authorize('NGO'), getMyNGO);
+router.get('/:id', getNGOById);
 router.post('/', protect, authorize('NGO'), createNGO);
 router.put('/:id', protect, authorize('NGO'), updateNGO);
 router.delete('/:id', protect, authorize('Admin'), deleteNGO);
 
-module.exports = router;
+export default router;

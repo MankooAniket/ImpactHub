@@ -1,46 +1,64 @@
-const jwt = require('jsonwebtoken');
-const User = require('../models/User');
+import { Response, NextFunction } from 'express';
+import jwt from 'jsonwebtoken';
+import User from '../models/User';
+import { AuthRequest } from '../types/index';
+
+interface JwtPayload {
+  id: string;
+  role: string;
+}
 
 // Protect routes — verify JWT token
-const protect = async (req, res, next) => {
-    let token;
+const protect = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  let token: string | undefined;
 
-    // Check if token exists in Authorization header
-    if (
-        req.headers.authorization &&
-        req.headers.authorization.startsWith('Bearer')
-    ) {
-        try {
-            // Extract token from header
-            token = req.headers.authorization.split(' ')[1];
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith('Bearer')
+  ) {
+    try {
+      // Extract token from header
+      token = req.headers.authorization.split(' ')[1];
 
-            // Verify token
-            const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      // Verify token
+      const decoded = jwt.verify(
+        token,
+        process.env.JWT_SECRET as string
+      ) as JwtPayload;
 
-            // Attach user to request object (excluding password)
-            req.user = await User.findById(decoded.id).select('-password');
+      // Attach user to request object excluding password
+      const user = await User.findById(decoded.id).select('-password');
 
-            next();
-        } catch (error) {
-            res.status(401).json({ message: 'Not authorized, token failed' });
-        }
+      if (!user) {
+        res.status(401).json({ message: 'Not authorized, user not found' });
+        return;
+      }
+
+      req.user = user;
+      next();
+    } catch (error) {
+      res.status(401).json({ message: 'Not authorized, token failed' });
     }
-
-    if (!token) {
-        res.status(401).json({ message: 'Not authorized, no token' });
-    }
+  } else {
+    res.status(401).json({ message: 'Not authorized, no token' });
+  }
 };
 
 // Restrict routes by role
-const authorize = (...roles) => {
-    return (req, res, next) => {
-        if (!roles.includes(req.user.role)) {
-            return res.status(403).json({
-                message: `Role ${req.user.role} is not authorized to access this route`,
-            });
-        }
-        next();
-    };
+const authorize = (...roles: string[]) => {
+  return (req: AuthRequest, res: Response, next: NextFunction): void => {
+    if (!req.user || !roles.includes(req.user.role)) {
+      res.status(403).json({
+        message: `Role ${req.user?.role} is not authorized to access this route`,
+      });
+      return;
+    }
+    next();
+  };
 };
 
-module.exports = { protect, authorize };
+export { protect, authorize };

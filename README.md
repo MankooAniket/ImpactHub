@@ -27,10 +27,12 @@ The social service sector suffers from fragmented information — NGOs rely on d
 
 | Layer | Technology |
 |---|---|
-| Frontend | React.js / Next.js |
+| Frontend | Next.js 14 |
 | Backend | Node.js + Express.js |
+| Language | TypeScript |
 | Database | MongoDB + Mongoose |
 | Authentication | JSON Web Token (JWT) |
+| Password Hashing | bcrypt |
 | Frontend Deployment | Vercel |
 | Backend Deployment | Render |
 | Database Hosting | MongoDB Atlas |
@@ -76,13 +78,19 @@ impacthub/
 │       └── utils/
 │
 ├── backend/                # Node.js + Express backend
-│   ├── config/
-│   ├── controllers/
-│   ├── middleware/
-│   ├── models/
-│   ├── routes/
-│   ├── utils/
-│   └── server.js
+|   ├── src/
+│   |   ├── config/          # Database connection and environment config
+│   |   ├── controllers/     # Business logic for each route module
+│   |   ├── middleware/      # Authentication and role-based access middleware
+│   |   ├── models/          # Mongoose schemas for User, NGO, and Event
+│   |   ├── routes/          # Express route definitions
+│   |   ├── types/           # Shared TypeScript interfaces and types
+│   |   ├── utils/           # Helper functions and utilities
+│   |   └── server.ts        # Application entry point
+|   ├── dist/                # Compiled JavaScript output
+|   ├── tsconfig.json        # TypeScript compiler configuration
+|   ├── .env                 # Environment variables
+|   └── package.json
 │
 ├── docs/                   # Documentation
 │   └── SRS.pdf
@@ -100,6 +108,7 @@ Make sure you have the following installed:
 - Node.js v20.x or higher
 - npm v9.x or higher
 - MongoDB Atlas account
+- TypeScript 5.x (installed automatically via npm)
 
 ---
 
@@ -230,6 +239,7 @@ The full Software Requirements Specification (SRS) document is available in the 
 - AI-based event recommendations
 - NGO analytics and participation reports
 - React Native mobile application
+- Unit and integration testing with Jest and Supertest
 
 ---
 

@@ -8,17 +8,17 @@ import {
   getStats,
 } from '../controllers/adminController';
 import { protect, authorize } from '../middleware/authMiddleware';
+import validateObjectId from '../middleware/validateObjectId';
 
 const router: Router = Router();
 
-// All routes are Admin only
 router.use(protect, authorize('Admin'));
 
 router.get('/stats', getStats);
 router.get('/ngos', getAllNGORequests);
-router.put('/ngos/:id/verify', verifyNGO);
+router.put('/ngos/:id/verify', validateObjectId , verifyNGO);
 router.get('/users', getAllUsers);
-router.delete('/users/:id', deleteUser);
-router.delete('/events/:id', deleteEventAdmin);
+router.delete('/users/:id', validateObjectId, deleteUser);
+router.delete('/events/:id', validateObjectId, deleteEventAdmin);
 
 export default router;

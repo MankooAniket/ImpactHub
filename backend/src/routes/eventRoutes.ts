@@ -11,20 +11,18 @@ import {
   cancelRegistration,
 } from '../controllers/volunteerController';
 import { protect, authorize } from '../middleware/authMiddleware';
+import validateObjectId from '../middleware/validateObjectId';
 
 const router: Router = Router();
 
-// Public routes
 router.get('/', getAllEvents);
-router.get('/:id', getEventById);
+router.get('/:id', validateObjectId, getEventById);
 
-// NGO routes
 router.post('/', protect, authorize('NGO'), createEvent);
-router.put('/:id', protect, authorize('NGO'), updateEvent);
-router.delete('/:id', protect, authorize('NGO', 'Admin'), deleteEvent);
+router.put('/:id', validateObjectId, protect, authorize('NGO'), updateEvent);
+router.delete('/:id', validateObjectId, protect, authorize('NGO', 'Admin'), deleteEvent);
 
-// Volunteer registration routes
-router.post('/:id/register', protect, authorize('Volunteer'), registerForEvent);
-router.delete('/:id/register', protect, authorize('Volunteer'), cancelRegistration);
+router.post('/:id/register', validateObjectId, protect, authorize('Volunteer'), registerForEvent);
+router.delete('/:id/register', validateObjectId, protect, authorize('Volunteer'), cancelRegistration);
 
 export default router;

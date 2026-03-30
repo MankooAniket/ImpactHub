@@ -91,7 +91,6 @@ const deleteUser = async (
       return;
     }
 
-    // Prevent admin from deleting themselves
     if (user._id.toString() === req.user!._id.toString()) {
       res.status(400).json({ message: 'You cannot delete your own account' });
       return;
@@ -121,12 +120,10 @@ const deleteEventAdmin = async (
       return;
     }
 
-    // Remove event from NGO events array
     await NGO.findByIdAndUpdate(event.ngo, {
       $pull: { events: event._id },
     });
 
-    // Remove event from all volunteers registeredEvents
     await User.updateMany(
       { registeredEvents: event._id },
       { $pull: { registeredEvents: event._id } }

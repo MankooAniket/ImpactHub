@@ -11,7 +11,6 @@ const getAllEvents = async (
   res: Response
 ): Promise<void> => {
   try {
-    // Build filter object from query params
     const filter: Record<string, unknown> = { status: 'Upcoming' };
 
     if (req.query.location) {
@@ -72,7 +71,6 @@ const createEvent = async (
       return;
     }
 
-    // Find the NGO profile of the logged in user
     const ngo = await NGO.findOne({ user: req.user._id });
 
     if (!ngo) {
@@ -80,7 +78,6 @@ const createEvent = async (
       return;
     }
 
-    // Check if NGO is verified
     if (!ngo.verified) {
       res.status(403).json({
         message: 'Your NGO must be verified before posting events',
@@ -99,7 +96,6 @@ const createEvent = async (
       location,
     });
 
-    // Add event to NGO events array
     ngo.events.push(event._id);
     await ngo.save();
 
@@ -131,7 +127,6 @@ const updateEvent = async (
       return;
     }
 
-    // Find NGO profile of logged in user
     const ngo = await NGO.findOne({ user: req.user._id });
 
     if (!ngo) {
@@ -139,7 +134,6 @@ const updateEvent = async (
       return;
     }
 
-    // Make sure the NGO owns this event
     if (event.ngo.toString() !== ngo._id.toString()) {
       res.status(403).json({
         message: 'Not authorized to update this event',
@@ -181,7 +175,6 @@ const deleteEvent = async (
       return;
     }
 
-    // If NGO is deleting check ownership
     if (req.user.role === 'NGO') {
       const ngo = await NGO.findOne({ user: req.user._id });
 
@@ -192,7 +185,6 @@ const deleteEvent = async (
         return;
       }
 
-      // Remove event from NGO events array
       ngo.events = ngo.events.filter(
         (e) => e.toString() !== event._id.toString()
       );

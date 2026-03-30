@@ -4,7 +4,6 @@ import { protect, authorize } from '../middleware/authMiddleware';
 
 const router: Router = Router();
 
-// Get all events registered by volunteer
 router.get(
   '/events',
   protect,

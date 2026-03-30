@@ -23,7 +23,6 @@ const registerForEvent = async (
       return;
     }
 
-    // Check if event is still upcoming
     if (event.status !== 'Upcoming') {
       res.status(400).json({
         message: 'Registration is only available for upcoming events',
@@ -31,7 +30,6 @@ const registerForEvent = async (
       return;
     }
 
-    // Check if volunteer is already registered
     const alreadyRegistered = event.participants.some(
       (participant) => participant.toString() === req.user!._id.toString()
     );
@@ -43,11 +41,9 @@ const registerForEvent = async (
       return;
     }
 
-    // Add volunteer to event participants
     event.participants.push(req.user._id);
     await event.save();
 
-    // Add event to volunteer registered events
     await User.findByIdAndUpdate(
       req.user._id,
       { $push: { registeredEvents: event._id } },
@@ -91,7 +87,6 @@ const cancelRegistration = async (
       return;
     }
 
-    // Check if volunteer is registered
     const isRegistered = event.participants.some(
       (participant) => participant.toString() === req.user!._id.toString()
     );
@@ -103,13 +98,11 @@ const cancelRegistration = async (
       return;
     }
 
-    // Remove volunteer from event participants
     event.participants = event.participants.filter(
       (participant) => participant.toString() !== req.user!._id.toString()
     );
     await event.save();
 
-    // Remove event from volunteer registered events
     await User.findByIdAndUpdate(
       req.user._id,
       { $pull: { registeredEvents: event._id } },

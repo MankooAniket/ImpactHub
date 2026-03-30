@@ -6,9 +6,9 @@ import { AuthRequest } from '../types/index';
 interface JwtPayload {
   id: string;
   role: string;
+  exp: number;
 }
 
-// Protect routes — verify JWT token
 const protect = async (
   req: AuthRequest,
   res: Response,
@@ -16,39 +16,45 @@ const protect = async (
 ): Promise<void> => {
   let token: string | undefined;
 
-  if (
+  if (req.cookies?.jwt) {
+    token = req.cookies.jwt;
+  }
+  else if (
     req.headers.authorization &&
     req.headers.authorization.startsWith('Bearer')
   ) {
-    try {
-      // Extract token from header
-      token = req.headers.authorization.split(' ')[1];
+    token = req.headers.authorization.split(' ')[1];
+  }
 
-      // Verify token
-      const decoded = jwt.verify(
-        token,
-        process.env.JWT_SECRET as string
-      ) as JwtPayload;
-
-      // Attach user to request object excluding password
-      const user = await User.findById(decoded.id).select('-password');
-
-      if (!user) {
-        res.status(401).json({ message: 'Not authorized, user not found' });
-        return;
-      }
-
-      req.user = user;
-      next();
-    } catch (error) {
-      res.status(401).json({ message: 'Not authorized, token failed' });
-    }
-  } else {
+  if (!token) {
     res.status(401).json({ message: 'Not authorized, no token' });
+    return;
+  }
+
+  try {
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET as string
+    ) as JwtPayload;
+
+    const user = await User.findById(decoded.id).select('-password');
+
+    if (!user) {
+      res.status(401).json({ message: 'Not authorized, user not found' });
+      return;
+    }
+
+    req.user = user;
+    next();
+  } catch (error) {
+    if (error instanceof jwt.TokenExpiredError) {
+      res.status(401).json({ message: 'Token expired, please login again' });
+      return;
+    }
+    res.status(401).json({ message: 'Not authorized, token failed' });
   }
 };
 
-// Restrict routes by role
 const authorize = (...roles: string[]) => {
   return (req: AuthRequest, res: Response, next: NextFunction): void => {
     if (!req.user || !roles.includes(req.user.role)) {

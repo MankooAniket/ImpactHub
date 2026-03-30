@@ -8,17 +8,16 @@ import {
   deleteNGO,
 } from '../controllers/ngoController';
 import { protect, authorize } from '../middleware/authMiddleware';
+import validateObjectId from '../middleware/validateObjectId';
 
 const router: Router = Router();
 
-// Public routes
 router.get('/', getAllNGOs);
 
-// Private routes — must be before /:id to avoid conflict
 router.get('/me', protect, authorize('NGO'), getMyNGO);
-router.get('/:id', getNGOById);
+router.get('/:id', validateObjectId, getNGOById);
 router.post('/', protect, authorize('NGO'), createNGO);
-router.put('/:id', protect, authorize('NGO'), updateNGO);
-router.delete('/:id', protect, authorize('Admin'), deleteNGO);
+router.put('/:id', validateObjectId, protect, authorize('NGO'), updateNGO);
+router.delete('/:id', validateObjectId, protect, authorize('Admin'), deleteNGO);
 
 export default router;

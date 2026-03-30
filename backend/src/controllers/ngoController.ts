@@ -88,7 +88,6 @@ const createNGO = async (
       return;
     }
 
-    // Check if NGO profile already exists for this user
     const existingNGO = await NGO.findOne({ user: req.user._id });
     if (existingNGO) {
       res.status(400).json({
@@ -137,7 +136,6 @@ const updateNGO = async (
       return;
     }
 
-    // Make sure the logged in user owns this NGO profile
     if (ngo.user.toString() !== req.user._id.toString()) {
       res.status(403).json({
         message: 'Not authorized to update this NGO profile',

@@ -4,14 +4,19 @@ import {
   createContext,
   useContext,
   useState,
-  useEffect,
   ReactNode,
 } from 'react';
 import { User } from '../types';
 
+interface StoredUser {
+  _id: string;
+  name: string;
+  email: string;
+  role: 'Admin' | 'NGO' | 'Volunteer';
+}
+
 interface AuthContextType {
-  user: User | null;
-  loading: boolean;
+  user: StoredUser | null;
   login: (userData: User) => void;
   logout: () => void;
   isAuthenticated: boolean;
@@ -20,21 +25,23 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-
-  useEffect(() => {
-    // Load user from localStorage on mount
-    const stored = localStorage.getItem('user');
-    if (stored) {
-      setUser(JSON.parse(stored));
+  const [user, setUser] = useState<StoredUser | null>(() => {
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('user');
+      return stored ? JSON.parse(stored) : null;
     }
-    setLoading(false);
-  }, []);
+    return null;
+  });
 
   const login = (userData: User) => {
-    localStorage.setItem('user', JSON.stringify(userData));
-    setUser(userData);
+    const safeUser: StoredUser = {
+      _id: userData._id,
+      name: userData.name,
+      email: userData.email,
+      role: userData.role,
+    };
+    localStorage.setItem('user', JSON.stringify(safeUser));
+    setUser(safeUser);
   };
 
   const logout = () => {
@@ -46,7 +53,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     <AuthContext.Provider
       value={{
         user,
-        loading,
         login,
         logout,
         isAuthenticated: !!user,

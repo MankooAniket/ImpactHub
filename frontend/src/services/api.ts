@@ -2,21 +2,20 @@ import axios from 'axios';
 
 const API = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
+  withCredentials: true,
 });
 
-// Attach token to every request automatically
-API.interceptors.request.use((config) => {
-  if (typeof window !== 'undefined') {
-    const user = localStorage.getItem('user');
-    if (user) {
-      const parsed = JSON.parse(user);
-      if (parsed.token) {
-        config.headers.Authorization = `Bearer ${parsed.token}`;
+API.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      if (typeof window !== 'undefined') {
+        window.location.href = '/login';
       }
     }
+    return Promise.reject(error);
   }
-  return config;
-});
+);
 
 // Auth
 export const registerUser = (data: object) =>
@@ -27,6 +26,9 @@ export const loginUser = (data: object) =>
 
 export const getMe = () =>
   API.get('/api/auth/me');
+
+export const logoutUser = () =>
+  API.post('/api/auth/logout');
 
 // NGOs
 export const getAllNGOs = () =>

@@ -4,10 +4,11 @@ dotenv.config();
 import express, { Application, Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
-import mongoSanitize from 'express-mongo-sanitize';
+
 import rateLimit from 'express-rate-limit';
 import cookieParser from 'cookie-parser';
 import connectDB from './config/db';
+import sanitize from './middleware/sanitize';
 
 // Connect to database
 connectDB();
@@ -29,7 +30,7 @@ app.use(express.urlencoded({ extended: false, limit: '10kb' }));
 app.use(cookieParser());
 
 // NoSQL injection sanitization
-app.use(mongoSanitize());
+app.use(sanitize);
 
 // Rate limiters
 const limiter = rateLimit({

@@ -5,6 +5,7 @@ export interface User {
   role: 'Admin' | 'NGO' | 'Volunteer';
   registeredEvents: string[];
   token?: string;
+  createdAt?: string;
 }
 
 export interface NGO {

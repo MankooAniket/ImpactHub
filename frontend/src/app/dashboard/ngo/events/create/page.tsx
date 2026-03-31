@@ -171,10 +171,14 @@ export default function CreateEventPage() {
             {/* Date and Time */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                <label
+                  htmlFor="event-date"
+                  className="block text-sm font-medium text-gray-700 mb-1.5"
+                >
                   Date
                 </label>
                 <input
+                  id="event-date"
                   type="date"
                   name="date"
                   value={formData.date}

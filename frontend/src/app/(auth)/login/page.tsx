@@ -8,6 +8,7 @@ import { loginUser } from '@/services/api';
 import toast from 'react-hot-toast';
 import { Heart, Eye, EyeOff, Loader2 } from 'lucide-react';
 import { AuthResponse } from '@/types';
+import { getErrorMessage } from '@/utils/errorHandler';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -57,8 +58,7 @@ export default function LoginPage() {
       else if (userData.role === 'NGO') router.push('/dashboard/ngo');
       else router.push('/dashboard/volunteer');
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      toast.error(err.response?.data?.message || 'Login failed');
+      toast.error(getErrorMessage(error, 'Invalid email or password'));
     } finally {
       setLoading(false);
     }

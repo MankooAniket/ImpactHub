@@ -8,7 +8,15 @@ const API = axios.create({
 API.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    const isLoginRoute = error.config?.url?.includes('/api/auth/login');
+    const isRegisterRoute = error.config?.url?.includes('/api/auth/register');
+
+    if (
+      error.response?.status === 401 &&
+      !isLoginRoute &&
+      !isRegisterRoute
+    ) {
+      localStorage.removeItem('user');
       if (typeof window !== 'undefined') {
         window.location.href = '/login';
       }

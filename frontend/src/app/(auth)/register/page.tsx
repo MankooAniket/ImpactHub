@@ -6,6 +6,8 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { registerUser } from '@/services/api';
 import toast from 'react-hot-toast';
+import { getErrorMessage } from '@/utils/errorHandler';
+
 import {
   Heart,
   Eye,
@@ -80,8 +82,7 @@ export default function RegisterPage() {
       if (userData.role === 'NGO') router.push('/dashboard/ngo');
       else router.push('/dashboard/volunteer');
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      toast.error(err.response?.data?.message || 'Registration failed');
+      toast.error(getErrorMessage(error, 'Login failed'));
     } finally {
       setLoading(false);
     }

@@ -8,6 +8,8 @@ import { getMyEvents, cancelRegistration } from '@/services/api';
 import { Event } from '@/types';
 import toast from 'react-hot-toast';
 import { MainLayout } from '@/components/layout';
+import { getErrorMessage } from '@/utils/errorHandler';
+
 import {
   Calendar,
   MapPin,
@@ -68,8 +70,7 @@ export default function VolunteerDashboard() {
       toast.success('Registration cancelled');
       fetchMyEvents();
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      toast.error(err.response?.data?.message || 'Cancellation failed');
+      toast.error(getErrorMessage(error, 'Cancellation Failed'));
     } finally {
       setCancelling(null);
     }

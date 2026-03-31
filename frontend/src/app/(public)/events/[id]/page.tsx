@@ -5,6 +5,8 @@ import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { MainLayout } from '@/components/layout';
 import { useAuth } from '@/context/AuthContext';
+import { getErrorMessage } from '@/utils/errorHandler';
+
 import {
   getEventById,
   registerForEvent,
@@ -70,8 +72,7 @@ export default function EventDetailPage() {
       toast.success('Successfully registered for the event!');
       fetchEvent();
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      toast.error(err.response?.data?.message || 'Registration failed');
+      toast.error(getErrorMessage(error, 'Registration Failed'));
     } finally {
       setRegistering(false);
     }
@@ -84,8 +85,7 @@ export default function EventDetailPage() {
       toast.success('Registration cancelled successfully');
       fetchEvent();
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      toast.error(err.response?.data?.message || 'Cancellation failed');
+      toast.error(getErrorMessage(error, 'Cancellation Failed'));
     } finally {
       setRegistering(false);
     }

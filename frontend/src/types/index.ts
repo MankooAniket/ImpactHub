@@ -38,7 +38,8 @@ export interface AuthResponse {
   name: string;
   email: string;
   role: 'Admin' | 'NGO' | 'Volunteer';
-  token: string;
+  registeredEvents: string[];
+  token?: string;
 }
 
 export interface ApiError {

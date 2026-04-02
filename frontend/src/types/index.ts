@@ -12,10 +12,20 @@ export interface NGO {
   _id: string;
   user: User;
   name: string;
+  mission?: string;
   description: string;
+  about?: string;
   address: string;
   contactEmail: string;
   contactPhone?: string;
+  website?: string;
+  profileImage?: string;
+  coverImage?: string;
+  socialLinks?: {
+    instagram?: string;
+    twitter?: string;
+    linkedin?: string;
+  };
   verified: boolean;
   events: Event[];
   createdAt: string;

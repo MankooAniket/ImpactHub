@@ -99,4 +99,14 @@ export const deleteUser = (id: string) =>
 export const deleteEventAdmin = (id: string) =>
   API.delete(`/api/admin/events/${id}`);
 
+export const uploadProfileImage = (formData: FormData) =>
+  API.post('/api/upload/profile', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
+
+export const uploadCoverImage = (formData: FormData) =>
+  API.post('/api/upload/cover', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
+
 export default API;

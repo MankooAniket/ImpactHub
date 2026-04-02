@@ -17,10 +17,20 @@ export interface INGO extends Document {
   _id: Types.ObjectId;
   user: Types.ObjectId;
   name: string;
+  mission?: string;
   description: string;
+  about?: string;
   address: string;
   contactEmail: string;
   contactPhone?: string;
+  website?: string;
+  profileImage?: string;
+  coverImage?: string;
+  socialLinks?: {
+    instagram?: string;
+    twitter?: string;
+    linkedin?: string;
+  };
   verified: boolean;
   events: Types.ObjectId[];
 }

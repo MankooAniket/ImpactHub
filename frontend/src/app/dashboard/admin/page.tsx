@@ -16,6 +16,8 @@ import { MainLayout } from '@/components/layout';
 import { Stats, NGO, User, Event } from '@/types';
 import toast from 'react-hot-toast';
 import { getErrorMessage } from '@/utils/errorHandler';
+import useMounted from '@/hooks/useMounted';
+
 import {
   Users,
   Building2,
@@ -41,7 +43,7 @@ export default function AdminDashboard() {
   const { user, isAuthenticated } = useAuth();
   const router = useRouter();
 
-  const [mounted, setMounted] = useState(false);
+  const mounted = useMounted();
   const [activeTab, setActiveTab] = useState<TabType>('overview');
   const [loading, setLoading] = useState(true);
 
@@ -53,10 +55,6 @@ export default function AdminDashboard() {
   const [verifying, setVerifying] = useState<string | null>(null);
   const [deleting, setDeleting] = useState<string | null>(null);
   const [rejectedIds, setRejectedIds] = useState<string[]>([]);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const fetchData = useCallback(async () => {
     try {

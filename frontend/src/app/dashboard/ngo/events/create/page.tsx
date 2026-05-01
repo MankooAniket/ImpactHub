@@ -9,12 +9,13 @@ import toast from 'react-hot-toast';
 import { MainLayout } from '@/components/layout';
 import { Loader2, ArrowLeft, Plus } from 'lucide-react';
 import { getErrorMessage } from '@/utils/errorHandler';
+import useMounted from '@/hooks/useMounted';
 
 export default function CreateEventPage() {
   const { user, isAuthenticated } = useAuth();
   const router = useRouter();
-  const [mounted, setMounted] = useState(false);
   const [saving, setSaving] = useState(false);
+  const mounted = useMounted();
 
   const [formData, setFormData] = useState({
     title: '',
@@ -25,10 +26,6 @@ export default function CreateEventPage() {
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   useEffect(() => {
     if (!mounted) return;

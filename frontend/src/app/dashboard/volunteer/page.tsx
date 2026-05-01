@@ -9,6 +9,7 @@ import { Event } from '@/types';
 import toast from 'react-hot-toast';
 import { MainLayout } from '@/components/layout';
 import { getErrorMessage } from '@/utils/errorHandler';
+import useMounted from '@/hooks/useMounted';
 
 import {
   Calendar,
@@ -30,15 +31,9 @@ export default function VolunteerDashboard() {
 
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
-  const [mounted, setMounted] = useState(false);
   const [cancelling, setCancelling] = useState<string | null>(null);
-
-  // Wait for component to mount before checking auth
-  // This prevents redirect before localStorage is read
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
+  const mounted = useMounted();
+  
   const fetchMyEvents = useCallback(async () => {
     try {
       const response = await getMyEvents();

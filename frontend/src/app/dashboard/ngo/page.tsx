@@ -23,6 +23,7 @@ import {
   ArrowRight,
 } from 'lucide-react';
 import { getErrorMessage } from '@/utils/errorHandler';
+import useMounted from '@/hooks/useMounted';
 
 export default function NGODashboard() {
   const { user, isAuthenticated } = useAuth();
@@ -31,12 +32,8 @@ export default function NGODashboard() {
   const [ngo, setNgo] = useState<NGO | null>(null);
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
-  const [mounted, setMounted] = useState(false);
   const [deleting, setDeleting] = useState<string | null>(null);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useMounted();
 
   const fetchData = useCallback(async () => {
     try {

@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { logoutUser } from '@/services/api';
 import toast from 'react-hot-toast';
+import useMounted from '@/hooks/useMounted';
 import {
   Menu,
   X,
@@ -21,6 +22,7 @@ const Navbar = () => {
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const mounted = useMounted();
 
   const handleLogout = async () => {
     try {
@@ -45,7 +47,6 @@ const Navbar = () => {
     <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-
           {/* Logo */}
           <Link
             href="/"
@@ -72,7 +73,12 @@ const Navbar = () => {
               NGOs
             </Link>
 
-            {isAuthenticated && user ? (
+            {!mounted ? (
+              <div className="flex items-center gap-3">
+                <div className="w-16 h-8 bg-gray-100 rounded-lg animate-pulse" />
+                <div className="w-24 h-8 bg-gray-100 rounded-lg animate-pulse" />
+              </div>
+            ) : isAuthenticated && user ? (
               <div className="relative">
                 <button
                   onClick={() => setDropdownOpen(!dropdownOpen)}
@@ -145,6 +151,7 @@ const Navbar = () => {
 
           {/* Mobile menu button */}
           <button
+            aria-label="Toggle mobile menu"
             onClick={() => setMenuOpen(!menuOpen)}
             className="md:hidden text-gray-600 hover:text-gray-900"
           >
@@ -154,7 +161,7 @@ const Navbar = () => {
       </div>
 
       {/* Mobile Menu */}
-      {menuOpen && (
+      {mounted && menuOpen && (
         <div className="md:hidden border-t border-gray-100 bg-white px-4 py-4 space-y-3">
           <Link
             href="/events"
@@ -172,31 +179,29 @@ const Navbar = () => {
           </Link>
 
           {isAuthenticated && user ? (
-            <>
-              <div className="border-t border-gray-100 pt-3">
-                <p className="text-xs text-gray-500 mb-2">
-                  Signed in as {user.email}
-                </p>
-                <Link
-                  href={getDashboardRoute()}
-                  onClick={() => setMenuOpen(false)}
-                  className="flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-blue-600 py-2"
-                >
-                  <LayoutDashboard size={14} />
-                  Dashboard
-                </Link>
-                <button
-                  onClick={() => {
-                    setMenuOpen(false);
-                    handleLogout();
-                  }}
-                  className="flex items-center gap-2 text-sm font-medium text-red-600 hover:text-red-700 py-2 w-full"
-                >
-                  <LogOut size={14} />
-                  Logout
-                </button>
-              </div>
-            </>
+            <div className="border-t border-gray-100 pt-3">
+              <p className="text-xs text-gray-500 mb-2">
+                Signed in as {user.email}
+              </p>
+              <Link
+                href={getDashboardRoute()}
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-blue-600 py-2"
+              >
+                <LayoutDashboard size={14} />
+                Dashboard
+              </Link>
+              <button
+                onClick={() => {
+                  setMenuOpen(false);
+                  handleLogout();
+                }}
+                className="flex items-center gap-2 text-sm font-medium text-red-600 hover:text-red-700 py-2 w-full"
+              >
+                <LogOut size={14} />
+                Logout
+              </button>
+            </div>
           ) : (
             <div className="border-t border-gray-100 pt-3 flex flex-col gap-2">
               <Link
